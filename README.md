@@ -7,11 +7,11 @@ This 401(k) Calculator is designed to help you accurately predict your 401(k) va
 
 Install, build and serve
 
-```npm install```
+```yarn install```
 
-```npm run build```
+```yarn run build```
 
-```npm run start```
+```yarn run start```
 
 
 ## Usage
