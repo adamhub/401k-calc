@@ -1,5 +1,5 @@
 import React from 'react'
-import { Slider, Typography, Input, Grid, TextField} from '@material-ui/core'
+import { Slider, Typography, Input, Grid, TextField } from '@material-ui/core'
 import ValueLabelComponent from './valueLabelComponent'
 import NumberFormat from 'react-number-format'
 import { useCookies } from 'react-cookie'
@@ -10,11 +10,11 @@ function CurrentBalanceSlider(props) {
 
     const marks = [
         {
-              value: 3,
-              label: '$10K',
+            value: 3,
+            label: '$10K',
         },
         {
-             value: 4,
+            value: 4,
             label: '$100K'
         },
         {
@@ -34,9 +34,9 @@ function CurrentBalanceSlider(props) {
 
     const handleBlur = () => {
         if (value < 3) {
-          setValue(3);
+            setValue(3);
         } else if (value > 6) {
-          setValue(6);
+            setValue(6);
         }
     };
 
@@ -46,71 +46,73 @@ function CurrentBalanceSlider(props) {
     };
 
     const handleInputChange = (event) => {
-        setValue(event.target.value === '' ? '' : Number(event.target.value));
-    };
+        const inputValue = event.target.value.replace(/[^0-9]/g, ''); // Remove any non-digit characters
+        setValue(inputValue === '' ? '' : Math.log10(Number(inputValue || 3)) - 1);
+      };
+      
 
     function NumberFormatCustom(props) {
-        const { inputRef, onChange, ...other} = props
+        const { inputRef, onChange, ...other } = props
 
         return (
-                <NumberFormat
-                    {...other}
-                    getInputRef ={inputRef}
-                    onValueChange={(values) => {
-                        onChange({
-                            target: {
-                                name: props.name,
-                                value: values.value
-                            },
-                        })
-                    }}
-                    thousandSeparator
-                    isNumericString
-                    prefix="$"
-                />
+            <NumberFormat
+                {...other}
+                getInputRef={inputRef}
+                onValueChange={(values) => {
+                    onChange({
+                        target: {
+                            name: props.name,
+                            value: values.value
+                        },
+                    })
+                }}
+                thousandSeparator
+                isNumericString
+                prefix="$"
+            />
         )
     }
 
     return (
-            <div>
-                <Typography gutterBottom>
-                    Current 401(k) balance
-                </Typography>
-                <Grid container spacing={4}>
-                    <Grid item xs={3}>
-                        <TextField
-                            value={Math.floor(10**value) * 10}
-                            onChange={handleInputChange}
-                            margin="dense"
-                            fullWidth
-                            name="numberformat"
-                            id="formatted-numberformat-input"
-                            InputProps={{
-                                inputComponent: NumberFormatCustom,
-                                step: 50000,
-                                min: 0,
-                                max: 10000000,
-                            }}
-                        />
-                    </Grid>
-                    <Grid item xs={8}>
-                        <Slider
-                            defaultValue={15}
-                            min={3}
-                            max={6}
-                            getAriaValueText={valuetext}
-                            aria-labelledby="discrete-slider-always"
-                            onChange={handleSliderChange}
-                            value={typeof value === 'number' ? value : 0}
-                            scale={(x) => (10 ** x) * 10}
-                            step={0.1}
-                            marks={marks}
-                            ValueLabelComponent={ValueLabelComponent}
-                            valueLabelFormat={(x) => `$${Math.trunc(x/1000)}K`}
-                        />
-                    </Grid>
+        <div>
+            <Typography gutterBottom>
+                Current 401(k) balance
+            </Typography>
+            <Grid container spacing={4}>
+                <Grid item xs={3}>
+                    <TextField
+                        value={Math.floor(10 ** value) * 10}
+                        onChange={handleInputChange}
+                        margin="dense"
+                        fullWidth
+                        name="numberformat"
+                        id="formatted-numberformat-input"
+                        InputProps={{
+                            inputComponent: NumberFormatCustom,
+                            step: 50000,
+                            min: 0,
+                            max: 10000000,
+                        }}
+                    />
                 </Grid>
-            </div>
+                <Grid item xs={8}>
+                    <Slider
+                        defaultValue={15}
+                        min={3}
+                        max={6}
+                        getAriaValueText={valuetext}
+                        aria-labelledby="discrete-slider-always"
+                        onChange={handleSliderChange}
+                        value={typeof value === 'number' ? value : 0}
+                        scale={(x) => (10 ** x) * 10}
+                        step={0.1}
+                        marks={marks}
+                        ValueLabelComponent={ValueLabelComponent}
+                        valueLabelFormat={(x) => `$${Math.trunc(x / 1000)}K`}
+                    />
+                </Grid>
+            </Grid>
+        </div>
     )
 
 }
