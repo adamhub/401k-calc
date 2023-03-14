@@ -1,37 +1,43 @@
-export default function({contribPercent, annualSalary, annualRaise, currentAge, retirementAge, currentBalance, annualRateOfReturn, employerMatch, employerMatchCap}) {
-    
-    let data = []
+export default function ({
+  contribPercent,
+  annualSalary,
+  annualRaise,
+  currentAge,
+  retirementAge,
+  currentBalance,
+  annualRateOfReturn,
+  employerMatch,
+  employerMatchCap,
+}) {
+  let data = [];
 
-    let valArray = []
+  let valArray = [];
 
-    let totalEarn = 0
-    
-    for (let i = 0; i < retirementAge - currentAge; i++) {
+  let totalEarn = 0;
 
-        let effectiveRaiseForYear = (1 + (annualRaise/100)) ** i
+  for (let i = 0; i < retirementAge - currentAge; i++) {
+    let effectiveRaiseForYear = (1 + annualRaise / 100) ** i;
 
-        let employeeContribition = (annualSalary * effectiveRaiseForYear) * (contribPercent/100)
+    let employeeContribition =
+      annualSalary * effectiveRaiseForYear * (contribPercent / 100);
 
+    // if (employeeContribition > 25000) {
+    //   employeeContribition = 25000;
+    // }
 
-        if (employeeContribition > 19500) {
-            employeeContribition = 19500
-        }
+    let startingBalance = i === 0 ? currentBalance : valArray[i - 1];
 
-        let startingBalance = i === 0 ? currentBalance : valArray[i-1]
+    let endOfYearTotalBeforeInterest = startingBalance + employeeContribition;
+    let endOfYearTotalAfterInterest =
+      endOfYearTotalBeforeInterest * (1 + annualRateOfReturn / 100);
 
-        let endOfYearTotalBeforeInterest = startingBalance + employeeContribition
-        let endOfYearTotalAfterInterest = endOfYearTotalBeforeInterest * (1 + (annualRateOfReturn/100))
+    valArray.push(endOfYearTotalAfterInterest);
 
+    totalEarn = endOfYearTotalAfterInterest;
+  }
 
-        valArray.push(endOfYearTotalAfterInterest)
+  data["totalEarn"] = totalEarn;
+  data["valArray"] = valArray;
 
-        totalEarn = endOfYearTotalAfterInterest
-
-    }
-
-    data["totalEarn"] = totalEarn
-    data["valArray"] = valArray
-
-    return data
-
+  return data;
 }
