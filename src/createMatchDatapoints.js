@@ -1,52 +1,59 @@
-export default function({contribPercent, annualSalary, annualRaise, currentAge, retirementAge, currentBalance, annualRateOfReturn, employerMatch, employerMatchCap, employerSetType}) {
+export default function ({
+  contribPercent,
+  annualSalary,
+  annualRaise,
+  currentAge,
+  retirementAge,
+  currentBalance,
+  annualRateOfReturn,
+  employerMatch,
+  employerMatchCap,
+  employerSetType,
+}) {
+  let data = [];
 
-    let data = []
+  let valArray = [];
 
-    let valArray = []
+  let totalEarn = 0;
 
-    let totalEarn = 0
+  for (let i = 0; i < retirementAge - currentAge; i++) {
+    let effectiveRaiseForYear = (1 + annualRaise / 100) ** i;
 
-    for (let i = 0; i < retirementAge - currentAge; i++) {
+    let yearlySalary = annualSalary * effectiveRaiseForYear;
 
-        let effectiveRaiseForYear = (1 + (annualRaise/100)) ** i
+    let employeeContribition = yearlySalary * (contribPercent / 100);
 
-        let yearlySalary = (annualSalary * effectiveRaiseForYear)
+    // if (employeeContribition > 25000) {
+    //   employeeContribition = 25000;
+    // }
 
-        let employeeContribition = yearlySalary * (contribPercent/100)
+    let startingBalance = i === 0 ? currentBalance : valArray[i - 1];
 
-        if (employeeContribition > 19500) {
-            employeeContribition = 19500
-        }
+    let realEmployerMatch = employeeContribition * (employerMatch / 100); //contribPercent > employerMatchCap ? employerMatchCap : contribPercent
 
-        let startingBalance = i === 0 ? currentBalance : valArray[i-1]
+    let employerContribution = annualSalary * (employerMatchCap / 100);
 
-        let realEmployerMatch = employeeContribition * (employerMatch/100); //contribPercent > employerMatchCap ? employerMatchCap : contribPercent
+    let endOfYearTotalBeforeInterest = startingBalance + employeeContribition;
 
-        let employerContribution = annualSalary * (employerMatchCap/100)
-
-        let endOfYearTotalBeforeInterest = startingBalance + employeeContribition
-        
-        if( employerSetType == 1 ){
-            // console.log("employerContribution", employerContribution)
-            endOfYearTotalBeforeInterest += employerContribution
-        }
-        else {
-            // console.log("realEmployerMatch", realEmployerMatch)
-            endOfYearTotalBeforeInterest += realEmployerMatch
-        }
-
-        let endOfYearTotalAfterInterest = endOfYearTotalBeforeInterest * (1 + (annualRateOfReturn/100))
-        
-        console.log(endOfYearTotalBeforeInterest)
-
-        valArray.push(endOfYearTotalAfterInterest)
-
-        totalEarn = endOfYearTotalAfterInterest
-
+    if (employerSetType == 1) {
+      // console.log("employerContribution", employerContribution)
+      endOfYearTotalBeforeInterest += employerContribution;
+    } else {
+      // console.log("realEmployerMatch", realEmployerMatch)
+      endOfYearTotalBeforeInterest += realEmployerMatch;
     }
-    data["totalEarn"] = totalEarn
-    data["valArray"] = valArray
 
-    return data
+    let endOfYearTotalAfterInterest =
+      endOfYearTotalBeforeInterest * (1 + annualRateOfReturn / 100);
 
+    // console.log(endOfYearTotalBeforeInterest)
+
+    valArray.push(endOfYearTotalAfterInterest);
+
+    totalEarn = endOfYearTotalAfterInterest;
+  }
+  data["totalEarn"] = totalEarn;
+  data["valArray"] = valArray;
+
+  return data;
 }
