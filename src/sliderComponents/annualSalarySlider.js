@@ -72,7 +72,7 @@ function SalarySlider(props) {
   };
 
   const handleInputChangeBiWeek = (event) => {
-    let newValue = removeNonNumeric(event.target.value) * 40 * 2;
+    let newValue = (removeNonNumeric(event.target.value) * 52) / 2;
 
     if (newValue > 1000000) newValue = 1000000;
     if (newValue < 0) newValue = 0;
